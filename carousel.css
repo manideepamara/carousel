@@ -1,0 +1,52 @@
+.carousel{
+    border: 1px solid black;
+    margin:0 auto;
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    position: relative;
+}
+.slides{
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.slide{
+    text-align: center;
+}
+
+.indicators{
+    position: absolute;
+    display: flex;
+    left:50%;
+    transform: translate(-50%);
+    bottom:10%;
+}
+
+.circle{
+    width:8px;
+    height: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+.circle.active{
+    background: black;
+}
+
+.arrow{
+    top:50%;
+    position: absolute;
+    cursor: pointer;
+}
+
+.left{
+    left:5%;
+}
+
+.right{
+    right:5%;
+}
