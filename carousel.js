@@ -13,6 +13,7 @@ let infiniteScroll;
 let slideWidth;
 let timer;
 let infiniteScrollDirection;
+let slideCount;
 
 function shiftLeft(){
     if(direction===-1){
@@ -39,9 +40,15 @@ function autoRotate(){
     timer  = setInterval(()=>{
         diff = -infiniteScrollDirection;
         infiniteScrollDirection > 0 ? shiftLeft() : shiftRight();
-    },1000);
+    },timeInterval);
 }
 
+
+
+/**
+ * it used to do the activities at the end of the each transition 
+ * 
+ */
 function addTailer(){
     document.addEventListener("transitionend",()=>{
         let c = 0;
@@ -65,23 +72,35 @@ function addTailer(){
         })
         indicators.children[currentSlide].classList.remove("active");
         let  newSlide = currentSlide+parseInt(diff);
-        if(newSlide === 5)
+        if(newSlide === slideCount)
             newSlide = 0;
         if(newSlide === -1)
-            newSlide = 4;
+            newSlide = slideCount-1;
         indicators.children[newSlide].classList.add("active");
         currentSlide = newSlide;
     })
 }
 
-
+/**
+ * 
+ * @param {*} width 
+ * @param {*} height 
+ * @param {*} slideCount 
+ * @description dimensions of carosel
+ */
 function defineCaraousel(width,height,slideCount){
     carousel.style.width=width;
     carousel.style.height=height;
     slides.style.width = `${slideCount*100}%`
 }
 
-
+/**
+ * 
+ * @param {*} slidesArr array of slides
+ * @param {*} slideWidth width of each slide
+ * @param {*} defaultSlide default slide to start with
+ * @description it injects the slides starting with default slide
+ */
 function addSlides(slidesArr,slideWidth,defaultSlide){
     slides.innerHTML = slidesArr.slice(defaultSlide)
     .concat(slidesArr.slice(0,defaultSlide))
@@ -97,12 +116,23 @@ function addSlides(slidesArr,slideWidth,defaultSlide){
     })
 }
 
-
+/**
+ * 
+ * @param {*} slideCount  number of slides
+ * @param {*} defaultSlide  starting slide
+ * @description injects the indicators to html skeleton
+ */
 function addIndicators(slideCount,defaultSlide){
+    //based on slide count indicators will render.
     let str = '';
     for(let i=0;i<slideCount;i++)
         str+=`<div id="${i}" class="circle ${i=== defaultSlide ? "active" : ""}"></div>`;
     indicators.innerHTML = str;
+
+    /**
+     * when user clicks any indicator it stops the auto rotate
+     * after manual transition auto rotate will enable.
+     */
     indicators.addEventListener('click',(e)=>{
         clearInterval(timer);
         const newSlide = e.target.id;
@@ -118,11 +148,20 @@ function addIndicators(slideCount,defaultSlide){
 
 
 
+
+/**
+ *   script to add the left and right navigation buttons
+ */
 function addNavigators(){
     navigators.innerHTML = `\
             <div class="arrow left">&lt;</div>\
             <div class="arrow right">&gt;</div>\
     `;
+
+    /**
+     * when user clicks left/right arrow it stops the auto rotate
+     * after manual transition auto rotate will enable.
+     */
     navigators.children[0].addEventListener('click', () => {
         clearInterval(timer);
         diff = -1;
@@ -142,22 +181,23 @@ function addNavigators(){
 
 
 
+//main function to drive the carousel
 function initCarousel({
-    slideArr = [1,2,3,4,5],
-    defaultSlide =  1,
-    isNavigatorsNeed = true,
-    isIndicatorsNeed = true,
-    width="80%",
-    height="250px",
-    delay = 1000,
-    isInfiniteScroll = true,
-    direction = -1
+    slideArr = [1,2,3,4,5],  //slides content
+    defaultSlide =  1,       //default landing slide
+    isNavigatorsNeed = true, //to show navigators or not
+    isIndicatorsNeed = true, //to show indicators or not
+    width="80%",             //width  of carousel
+    height="250px",          //height of carousel
+    delay = 1000,            //transition delay
+    isInfiniteScroll = true, //auto scroll with transition delay
+    direction = -1           //auto scroll direction 
 }){
     infiniteScrollDirection = direction;
     infiniteScroll = isInfiniteScroll;
     timeInterval = delay;
     infiniteScroll = isInfiniteScroll
-    const slideCount = slideArr.length;
+    slideCount = slideArr.length;
     slideWidth  = 100/slideCount;
     slides.style.transition = `all ${delay/1000}s linear`;
     defineCaraousel(width,height,slideCount)
@@ -174,5 +214,5 @@ function initCarousel({
 
 
 
-
+//calling the init function
 initCarousel({});
