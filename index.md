@@ -1,2 +1,0 @@
-# carousel
-#hi manideep here
